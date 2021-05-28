@@ -9,17 +9,6 @@ function tokenize(chars: string): string[] {
   
   // Function for dealing with basic primitives
   function atom(token: string): Atom<any> {
-    // Attempt to parse this as an integer
-    const int = parseInt(token, 10);
-  
-    //                Fix for old EMCAStript parseInt() handling
-    //                 |                         |
-    //                 v                         v
-    if (!isNaN(int) && (int !== 0 && token === "0") === false) {
-      return new AtNum(int);
-    }
-  
-    // Not an int? Let's try a float.
     const float = parseFloat(token);
     if (!isNaN(float)) {
       return new AtNum(float);
