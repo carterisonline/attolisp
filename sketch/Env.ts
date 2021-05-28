@@ -11,7 +11,6 @@ class Env {
     out.data = {
       // Adding! You can parse any number of arguments to add together, including just one!
       "+": (numbers: AtNum[]) => {
-        console.log(numbers);
         let sum = numbers[0].val;
         for (let i = 1; i < numbers.length; i++) {
           sum += numbers[i].val;
@@ -43,6 +42,98 @@ class Env {
         }
         return new AtNum(product);
       },
+      // When provided with one argument, returns (1 / x)
+      "/": (numbers: AtNum[]) => {
+        let out = numbers[0].val;
+
+        // Flip if only one argument is passed
+        if (numbers.length === 1) {
+          out = 1 / out;
+        }
+
+        // Divide every other argument, skipped if there's only one.
+        for (let i = 1; i < numbers.length; i++) {
+          out /= numbers[i].val;
+        }
+        return new AtNum(out);
+      },
+      // Returns true if all elements are in ascending order
+      "<": (numbers: AtNum[]) => {
+        let comparator = numbers[0].val;
+
+        for (let i = 1; i < numbers.length; i++) {
+          if (numbers[i].val <= comparator) {
+            return new AtBool(false);
+          }
+        }
+
+        return new AtBool(true);;
+      },
+      // Returns true if all elements are in descending order
+      ">": (numbers: AtNum[]) => {
+        let comparator = numbers[0].val;
+
+        for (let i = 1; i < numbers.length; i++) {
+          if (numbers[i].val >= comparator) {
+            return new AtBool(false);
+          }
+        }
+
+        return new AtBool(true);
+      },
+      // Return true if all elements are non-decreasing
+      "<=": (numbers: AtNum[]) => {
+        let comparator = numbers[0].val;
+
+        for (let i = 1; i < numbers.length; i++) {
+          if (numbers[i].val < comparator) {
+            return new AtBool(false);
+          }
+        }
+
+        return new AtBool(true);
+      },
+      // Return true if all elements are non-increasing
+      ">=": (numbers: AtNum[]) => {
+        let comparator = numbers[0].val;
+
+        for (let i = 1; i < numbers.length; i++) {
+          if (numbers[i].val > comparator) {
+            return new AtBool(false);
+          }
+        }
+
+        return new AtBool(true);
+      },
+      // Return true if all elements are equal
+      "=": (numbers: AtNum[]) => {
+        let comparator = numbers[0].val;
+
+        for (let i = 1; i < numbers.length; i++) {
+          if (numbers[i].val !== comparator) {
+            return new AtBool(false);
+          }
+        }
+
+        return new AtBool(true);
+      },
+      "abs": (vals: AtNum[]) => new AtNum(abs(vals[0].val)),
+      "begin": (vals: Atom<any>[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
+      // Prints each argument
+      "println": (vals: Atom<any>[]): null => {
+        if (vals.length > 1) {
+          let out = [];
+          for (let v of vals) {
+            if (v instanceof AtNum || v instanceof AtBool) {
+              out.push(v.val);
+            }
+          }
+          console.log(out);
+        } else {
+          console.log(vals[0].val);
+        }
+        return null;
+      }
     };
 
     return out;
