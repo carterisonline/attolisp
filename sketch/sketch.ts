@@ -79,3 +79,5 @@ function setup() {
     height * (3 / 4)
   );
 }
+
+function draw() {  }

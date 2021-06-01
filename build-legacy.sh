@@ -76,9 +76,9 @@ sd 'createCanvas' '// createCanvas' ./*.js
 sd '[^\.]push' 'pushMatrix' ./*.js
 sd '[^\.]pop' 'popMatrix' ./*.js
 sd 'print[^l]\s*?' 'println\(' ./*.js
-sd 'new\s*?Array\s*?\(\)' 'new Array\(0\)' ./*.js
+sd 'new\s*?Array\s*?\(\)' 'new Array(0)' ./*.js
 sd 'createVector' 'new PVector' ./*.js
-sd 'function\sdraw' '\nsetup\(\);\nfunction draw' ./*.js
+sd 'function\sdraw' '\nsetup();\nfunction draw' ./*.js
 sd 'windowWidth' 'width' ./*.js
 sd 'windowHeight' 'height' ./*.js
 sd 'resizeCanvas' '// resizeCanvas' ./*.js
