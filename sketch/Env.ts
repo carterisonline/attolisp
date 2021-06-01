@@ -10,17 +10,17 @@ class Env {
 
     out.data = {
       // Adding! You can parse any number of arguments to add together, including just one!
-      "+": (numbers: AtNum[]) => {
+      "+": (numbers: Atom<number>[]) => {
         let sum = numbers[0].val;
         for (let i = 1; i < numbers.length; i++) {
           sum += numbers[i].val;
         }
-        return new AtNum(sum);
+        return new Atom<number>(sum);
       },
       //   This serves as two functions, the subtraction and negation functions. If you pass
       //   only one literal, it'll negate it, while anything else will subtract from the first literal.
       // Note: This does not apply to negative literals such as `-1`, only function uses such as `(- 1)`.
-      "-": (numbers: AtNum[]) => {
+      "-": (numbers: Atom<number>[]) => {
         let out = numbers[0].val;
 
         // Negate if only one argument is passed
@@ -32,18 +32,18 @@ class Env {
         for (let i = 1; i < numbers.length; i++) {
           out -= numbers[i].val;
         }
-        return new AtNum(out);
+        return new Atom<number>(out);
       },
       // Multiplication! This will multiply every number together.
-      "*": (numbers: AtNum[]) => {
+      "*": (numbers: Atom<number>[]) => {
         let product = numbers[0].val;
         for (let i = 1; i < numbers.length; i++) {
           product *= numbers[i].val;
         }
-        return new AtNum(product);
+        return new Atom<number>(product);
       },
       // When provided with one argument, returns (1 / x)
-      "/": (numbers: AtNum[]) => {
+      "/": (numbers: Atom<number>[]) => {
         let out = numbers[0].val;
 
         // Flip if only one argument is passed
@@ -55,76 +55,76 @@ class Env {
         for (let i = 1; i < numbers.length; i++) {
           out /= numbers[i].val;
         }
-        return new AtNum(out);
+        return new Atom<number>(out);
       },
       // Returns true if all elements are in ascending order
-      "<": (numbers: AtNum[]) => {
+      "<": (numbers: Atom<number>[]) => {
         let comparator = numbers[0].val;
 
         for (let i = 1; i < numbers.length; i++) {
           if (numbers[i].val <= comparator) {
-            return new AtBool(false);
+            return new Atom<boolean>(false);
           }
         }
 
-        return new AtBool(true);;
+        return new Atom<boolean>(true);
       },
       // Returns true if all elements are in descending order
-      ">": (numbers: AtNum[]) => {
+      ">": (numbers: Atom<number>[]) => {
         let comparator = numbers[0].val;
 
         for (let i = 1; i < numbers.length; i++) {
           if (numbers[i].val >= comparator) {
-            return new AtBool(false);
+            return new Atom<boolean>(false);
           }
         }
 
-        return new AtBool(true);
+        return new Atom<boolean>(true);
       },
       // Return true if all elements are non-decreasing
-      "<=": (numbers: AtNum[]) => {
+      "<=": (numbers: Atom<number>[]) => {
         let comparator = numbers[0].val;
 
         for (let i = 1; i < numbers.length; i++) {
           if (numbers[i].val < comparator) {
-            return new AtBool(false);
+            return new Atom<boolean>(false);
           }
         }
 
-        return new AtBool(true);
+        return new Atom<boolean>(true);
       },
       // Return true if all elements are non-increasing
-      ">=": (numbers: AtNum[]) => {
+      ">=": (numbers: Atom<number>[]) => {
         let comparator = numbers[0].val;
 
         for (let i = 1; i < numbers.length; i++) {
           if (numbers[i].val > comparator) {
-            return new AtBool(false);
+            return new Atom<boolean>(false);
           }
         }
 
-        return new AtBool(true);
+        return new Atom<boolean>(true);
       },
       // Return true if all elements are equal
-      "=": (numbers: AtNum[]) => {
+      "=": (numbers: Atom<number>[]) => {
         let comparator = numbers[0].val;
 
         for (let i = 1; i < numbers.length; i++) {
           if (numbers[i].val !== comparator) {
-            return new AtBool(false);
+            return new Atom<boolean>(false);
           }
         }
 
-        return new AtBool(true);
+        return new Atom<boolean>(true);
       },
-      "abs": (vals: AtNum[]) => new AtNum(abs(vals[0].val)),
+      "abs": (vals: Atom<number>[]) => new Atom<number>(abs(vals[0].val)),
       "begin": (vals: Atom<any>[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
       // Prints each argument
       "println": (vals: Atom<any>[]): null => {
         if (vals.length > 1) {
-          let out = [];
+          let out: any[] = [];
           for (let v of vals) {
-            if (v instanceof AtNum || v instanceof AtBool) {
+            if (typeof v.val === "number" || typeof v.val === "boolean") {
               out.push(v.val);
             }
           }

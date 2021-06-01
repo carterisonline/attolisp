@@ -11,16 +11,16 @@ function tokenize(chars: string): string[] {
   function atom(token: string): Atom<any> {
     const float = parseFloat(token);
     if (!isNaN(float)) {
-      return new AtNum(float);
+      return new Atom<number>(float);
     }
   
     // Handle booleans
     if (token === "false") {
-      return new AtBool(false);
+      return new Atom<boolean>(false);
     }
   
     if (token === "true") {
-      return new AtBool(true);
+      return new Atom<boolean>(true);
     }
   
     if (token === "none") {
@@ -28,7 +28,7 @@ function tokenize(chars: string): string[] {
     }
   
     // None of the above? Just return a string.
-    return new AtSymb(token);
+    return new Atom<string>(token);
   }
   
   // Function responsible for parsing the tokens into actual data
