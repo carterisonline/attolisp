@@ -9,21 +9,23 @@ function eval_a(
   x: Atom<any> | any[],
   env: Env = global_env
 ): Atom<any> | Function {
-  if (x instanceof AtSymb) {
-    // Return function if argument passed is a string (not a literal)
-    return env.data[x.val];
-  } else if (x instanceof AtNum || x instanceof AtBool) {
-    // You don't have to do anything with numbers
-    return x;
-  } else if ((x as AtSymb[])[0].val === "if") {
+  if (x instanceof Atom) {
+    if (typeof x.val === 'string') {
+      // Return function if argument passed is a string (not a literal)
+      return env.data[x.val];
+    } else if (typeof x.val === 'number' || typeof x.val === 'boolean') {
+      // You don't have to do anything with numbers
+      return x;
+    }
+  } else if ((x as Atom<string>[])[0].val === "if") {
     // Run second argument if the first argument is true, else, run the third.
     const [_, test, conseq, alt] = x as any[];
-    const exp = (eval_a(test, env) as AtBool).val === true ? conseq : alt;
+    const exp = (eval_a(test, env) as Atom<boolean>).val === true ? conseq : alt;
     return eval_a(exp, env);
-  } else if ((x as AtSymb[])[0].val === "define") {
+  } else if ((x as Atom<string>[])[0].val === "define") {
     // Add a function to the environment, persisting only for the scope it's in.
     const [_, symbol, exp] = x as any[];
-    env.data[(symbol as AtSymb).val] = eval_a(exp, env);
+    env.data[(symbol as Atom<string>).val] = eval_a(exp, env);
     console.log(env);
   } else {
     // If `x` is an array/object, then we have to run a subpair as a function!
@@ -77,3 +79,5 @@ function setup() {
     height * (3 / 4)
   );
 }
+
+function draw() {  }
