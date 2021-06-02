@@ -42,7 +42,7 @@ function eval_a(
 }
 
 function setup() {
-  let program = "(begin (define r 7.4) (* 3.14159265359 r r))"; // Calculate circumference!
+  let program = "(begin (define r 10) (define ops (list pi r r)) (* 2 (atan (apply * ops))))"; // The higher `r` is, the closer to pi
 
   console.log(`Your input: ${program}`);
   console.log("Is tokenized into: ")

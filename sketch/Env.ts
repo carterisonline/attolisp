@@ -3,7 +3,7 @@ type Atom = boolean | number | string;
 type Expr = Atom | Atom[];
 
 interface DefaultProgramEnvironment {
-  [propertyName: string]: Function;
+  [propertyName: string]: Function | Expr;
 }
 
 class Env<T> {
@@ -14,6 +14,12 @@ class Env<T> {
   static default(): Env<DefaultProgramEnvironment> {
     // Default environment, almost like a "core" library.
     return new Env({
+      //! Global section -----------------
+      "pi": PI,
+      "tau": TAU,
+      "e": exp(1),
+
+      //! Function section ---------------
       // Adding! You can parse any number of arguments to add together, including just one!
       "+": (numbers: number[]) => {
         let sum = numbers[0];
@@ -122,16 +128,21 @@ class Env<T> {
 
         return true;
       },
-      "abs": (vals: number[]) => abs(vals[0]),
+      "abs": (vals: number[]) => abs(vals[0]), // Returns the absolute value of the first element
+      "acos": (numbers: number[]) => acos(numbers[0]), // Returns acos(n)
+      "apply": (vals: (Expr | Function)[]) => (vals[0] as Function)(vals[1] as Atom[]), // Applies the operation to a list of elements
+      "asin": (numbers: number[]) => asin(numbers[0]), // Returns asin(n)
+      "atan": (numbers: number[]) => atan(numbers[0]), // Returns atan(n)
       "begin": (vals: Atom[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
       "car": (vals: Atom[][]) => vals[0][0], // Returns the first item in a list
       // Returns the tail of a list
       "cdr": (vals: any[]) => {
         let out = vals[0];
         out.shift();
-        return new out;
+        return out;
       },
       "cons": (vals: Atom[]) => [vals[0]].concat(vals[1]), // Combines the `car` $1 and `cdr` $2 together
+      "cos": (numbers: number[]) => cos(numbers[0]), // Returns cos(n)
       // Return true if all elements are equal
       "eq?": (vals: Atom[]) => {
         let comparator = vals[0];
@@ -144,22 +155,63 @@ class Env<T> {
 
         return true;
       },
-      "expt": (numbers: number[]) => pow(numbers[0], numbers[1]),
+      "expt": (numbers: number[]) => pow(numbers[0], numbers[1]), // Raises the first number to the power of the second
+      "length": (vals: Expr[]) => (vals[0] as Atom[]).length, // Returns length of first element
+      "list": (vals: Atom[]) => vals, // Returns a list of the given elements
+      "list?": (vals: Expr[]) => typeof vals[0] === "object", // Returns true if the first element is a list
+      // Apply a mapping operation to any amount of lists
+      "map": (vals: (Expr | Function)[]) => {
+        let v: Atom[][] = [];
+        for (let i = 1; i < vals.length; i++) {
+          for (let j in vals[i] as Atom[]) {
+            if (v[j] === undefined) {
+              v[j] = [];
+            }
+
+            v[j][i - 1] = (vals[i] as Atom[])[j];
+          }
+        }
+        return v.map(v => (vals[0] as Function)(v));
+      },
+      // Returns the maximum of any amount of numbers
+      "max": (numbers: number[]) => {
+        let m = -Infinity;
+        for (let n of numbers) {
+          m = max(m, n);
+        }
+        return m;
+      },
+      // Returns the minimum of any amount of numbers
+      "min": (numbers: number[]) => {
+        let m = Infinity;
+        for (let n of numbers) {
+          m = min(m, n);
+        }
+        return m;
+      },
+      "not": (bools: boolean[]) => bools.map(b => !b), // Inverts the values given
+      "null?": (vals: Expr[]) => vals[0] === undefined || vals[0] === null || isNaN(vals[0] as number), // Returns true if the first element is null
+      "number?": (vals: Expr[]) => typeof vals[0] === "number", // Returns true if the first element is a number
+      "procedure?": (vals: (Function | Expr)[]) => typeof vals[0] === "function", // Returns true if the first element is a function
       // Prints each argument
-      "println": (vals: Expr): null => {
-        if ((vals as Atom[]).length > 1) {
+      "println": (vals: Atom[]): null => {
+        if (vals.length > 1) {
           let out: Atom[] = [];
-          for (let v of vals as Atom[]) {
-            if (typeof v === "number" || typeof v === "boolean") {
+          for (let v of vals) {
+            if (typeof v === "number" || typeof v === "boolean" || typeof v === "string") {
               out.push(v);
             }
           }
           console.log(out);
         } else {
-          console.log((vals as Atom[])[0]);
+          console.log(vals[0]);
         }
         return null;
-      }
+      },
+      "round": (numbers: number[]) => numbers.map(n => round(n)), // Rounds any amount of numbers
+      "sin": (numbers: number[]) => sin(numbers[0]), // Returns sin(n)
+      "symbol?": (vals: Expr[]) => typeof vals[0] === "string", // Returns true if the first element is a string
+      "tan": (numbers: number[]) => tan(numbers[0]), // Returns tan(n)
     });
   }
 }
