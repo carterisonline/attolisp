@@ -42,7 +42,7 @@ function eval_a(
 }
 
 function setup() {
-  let program = "(begin (define r 7.4) (* 3.141565359 r r))"; // Calculate circumference!
+  let program = "(begin (define r 7.4) (- false true))"; // Calculate circumference!
 
   console.log(`Your input: ${program}`);
   console.log("Is tokenized into: ")

@@ -119,6 +119,27 @@ class Env {
       },
       "abs": (vals: Atom<number>[]) => new Atom<number>(abs(vals[0].val)),
       "begin": (vals: Atom<any>[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
+      "car": (vals: any[]) => new Atom<any>(vals[0].val[0]), // Returns the first item in a list
+       // Returns the tail of a list
+      "cdr": (vals: any[]) => {
+        let out = vals[0].val;
+        out.shift();
+        return new Atom<any[]>(out);
+      },
+      "cons": (vals: any[]) => new Atom<any[]>([vals[0].val].concat(vals[1].val)), // Combines the `car` $1 and `cdr` $2 together
+      // Return true if all elements are equal
+      "eq?": (vals: any[]) => {
+        let comparator = vals[0].val;
+
+        for (let i = 1; i < vals.length; i++) {
+          if (vals[i].val !== comparator) {
+            return new Atom<boolean>(false);
+          }
+        }
+
+        return new Atom<boolean>(true);
+      },
+      "expt": (numbers: Atom<number>[]) => new Atom<number>(pow(numbers[0].val, numbers[1].val)),
       // Prints each argument
       "println": (vals: Atom<any>[]): null => {
         if (vals.length > 1) {
