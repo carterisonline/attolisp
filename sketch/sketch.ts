@@ -6,26 +6,26 @@
 let global_env: Env;
 
 function eval_a(
-  x: Atom<any> | any[],
+  x: any,
   env: Env = global_env
-): Atom<any> | Function {
-  if (x instanceof Atom) {
-    if (typeof x.val === 'string') {
+): any {
+  if (typeof x !== "object") {
+    if (typeof x === 'string') {
       // Return function if argument passed is a string (not a literal)
-      return env.data[x.val];
-    } else if (typeof x.val === 'number' || typeof x.val === 'boolean') {
+      return env.data[x];
+    } else if (typeof x === 'number' || typeof x === 'boolean') {
       // You don't have to do anything with numbers
       return x;
     }
-  } else if ((x as Atom<string>[])[0].val === "if") {
+  } else if ((x as string[])[0] === "if") {
     // Run second argument if the first argument is true, else, run the third.
     const [_, test, conseq, alt] = x as any[];
-    const exp = (eval_a(test, env) as Atom<boolean>).val === true ? conseq : alt;
+    const exp = (eval_a(test, env) as boolean) === true ? conseq : alt;
     return eval_a(exp, env);
-  } else if ((x as Atom<string>[])[0].val === "define") {
+  } else if ((x as string[])[0] === "define") {
     // Add a function to the environment, persisting only for the scope it's in.
     const [_, symbol, exp] = x as any[];
-    env.data[(symbol as Atom<string>).val] = eval_a(exp, env);
+    env.data[symbol as string] = eval_a(exp, env);
     console.log(env);
   } else {
     // If `x` is an array/object, then we have to run a subpair as a function!
@@ -42,7 +42,7 @@ function eval_a(
 }
 
 function setup() {
-  let program = "(begin (define r 7.4) (- false true))"; // Calculate circumference!
+  let program = "(begin (define r 7.4) (* 3.14159265359 r r))"; // Calculate circumference!
 
   console.log(`Your input: ${program}`);
   console.log("Is tokenized into: ")

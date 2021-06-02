@@ -8,19 +8,19 @@ function tokenize(chars: string): string[] {
 }
 
 // Function for dealing with basic primitives
-function atom(token: string): Atom<any> {
+function atom(token: string): string | boolean | number {
   const float = parseFloat(token);
   if (!isNaN(float)) {
-    return new Atom<number>(float);
+    return float;
   }
 
   // Handle booleans
   if (token === "false") {
-    return new Atom<boolean>(false);
+    return false;
   }
 
   if (token === "true") {
-    return new Atom<boolean>(true);
+    return true;
   }
 
   if (token === "none") {
@@ -28,7 +28,7 @@ function atom(token: string): Atom<any> {
   }
 
   // None of the above? Just return a string.
-  return new Atom<string>(token);
+  return token;
 }
 
 // Function responsible for parsing the tokens into actual data
