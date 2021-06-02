@@ -1,14 +1,19 @@
 // Program environment, responsible for handling functions
-class Env {
-  data: any;
-  constructor() {
-    this.data = {};
-  }
-  static default(): Env {
-    // Default environment, almost like a "core" library.
-    let out = new Env();
+type Atom = boolean | number | string;
+type Expr = Atom | Atom[];
 
-    out.data = {
+interface DefaultProgramEnvironment {
+  [propertyName: string]: Function;
+}
+
+class Env<T> {
+  data: T;
+  constructor(data: T) {
+    this.data = data;
+  }
+  static default(): Env<DefaultProgramEnvironment> {
+    // Default environment, almost like a "core" library.
+    return new Env({
       // Adding! You can parse any number of arguments to add together, including just one!
       "+": (numbers: number[]) => {
         let sum = numbers[0];
@@ -118,17 +123,17 @@ class Env {
         return true;
       },
       "abs": (vals: number[]) => abs(vals[0]),
-      "begin": (vals: any[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
-      "car": (vals: any[]) => vals[0][0], // Returns the first item in a list
-       // Returns the tail of a list
+      "begin": (vals: Atom[]) => vals[vals.length - 1], // Runs every first argument, and only returning the last one.
+      "car": (vals: Atom[][]) => vals[0][0], // Returns the first item in a list
+      // Returns the tail of a list
       "cdr": (vals: any[]) => {
         let out = vals[0];
         out.shift();
         return new out;
       },
-      "cons": (vals: any[]) => [vals[0]].concat(vals[1]), // Combines the `car` $1 and `cdr` $2 together
+      "cons": (vals: Atom[]) => [vals[0]].concat(vals[1]), // Combines the `car` $1 and `cdr` $2 together
       // Return true if all elements are equal
-      "eq?": (vals: any[]) => {
+      "eq?": (vals: Atom[]) => {
         let comparator = vals[0];
 
         for (let i = 1; i < vals.length; i++) {
@@ -141,22 +146,20 @@ class Env {
       },
       "expt": (numbers: number[]) => pow(numbers[0], numbers[1]),
       // Prints each argument
-      "println": (vals: any[]): null => {
-        if (vals.length > 1) {
-          let out: any[] = [];
-          for (let v of vals) {
+      "println": (vals: Expr): null => {
+        if ((vals as Atom[]).length > 1) {
+          let out: Atom[] = [];
+          for (let v of vals as Atom[]) {
             if (typeof v === "number" || typeof v === "boolean") {
               out.push(v);
             }
           }
           console.log(out);
         } else {
-          console.log(vals[0]);
+          console.log((vals as Atom[])[0]);
         }
         return null;
       }
-    };
-
-    return out;
+    });
   }
 }

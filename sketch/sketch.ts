@@ -3,11 +3,11 @@
 //! import * as p5 from 'p5'
 
 // Default environment (the Env class is located at Env.ts)
-let global_env: Env;
+let global_env: Env<DefaultProgramEnvironment>;
 
 function eval_a(
   x: any,
-  env: Env = global_env
+  env: Env<DefaultProgramEnvironment> = global_env
 ): any {
   if (typeof x !== "object") {
     if (typeof x === 'string') {
