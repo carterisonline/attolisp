@@ -92,6 +92,7 @@ packageattr() {
     cat ../package.json | jq -r .$1
 }
 
+prepend build.js "/*jshint sub:true*/ // This lets JSHint forgive absence of dot notation"
 prepend build.js "//"
 prepend build.js "// This projects' source is available at $(packageattr homepage)"
 prepend build.js "//"

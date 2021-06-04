@@ -6,35 +6,35 @@
 let global_env: Env<DefaultProgramEnvironment>;
 
 function eval_a(
-  x: any,
+  item: Typed<Atom>[] | Typed<Atom>,
   env: Env<DefaultProgramEnvironment> = global_env
 ): any {
-  if (typeof x !== "object") {
-    if (typeof x === 'string') {
+  if (!Array.isArray(item)) { // Is this not an array? (an object that indexes with numbers, not a Typed object)
+    if ((item as Typed<Atom>).type === Type.Expression) {
       // Return function if argument passed is a string (not a literal)
-      return env.data[x];
-    } else if (typeof x === 'number' || typeof x === 'boolean') {
+      return env.data[(item as Typed<string>).value];
+    } else {
       // You don't have to do anything with numbers
-      return x;
+      return item;
     }
-  } else if ((x as string[])[0] === "if") {
+  } else if (item[0].value === "if") {
     // Run second argument if the first argument is true, else, run the third.
-    const [_, test, conseq, alt] = x as any[];
+    const [_, test, conseq, alt] = item as Typed<Atom>[];
     const exp = (eval_a(test, env) as boolean) === true ? conseq : alt;
     return eval_a(exp, env);
-  } else if ((x as string[])[0] === "define") {
+  } else if (item[0].value === "define") {
     // Add a function to the environment, persisting only for the scope it's in.
-    const [_, symbol, exp] = x as any[];
-    env.data[symbol as string] = eval_a(exp, env);
+    const [_, symbol, exp] = item as Typed<Atom>[];
+    env.data[symbol.value as string] = eval_a(exp, env);
     console.log(env);
   } else {
     // If `x` is an array/object, then we have to run a subpair as a function!
-    const proc = eval_a((x as any[])[0], env); // What function are we using?
+    const proc = eval_a((item as Typed<Atom>[])[0], env); // What function are we using?
 
     if (typeof proc === "function") {
       let args = []; // Run the function with the arguments!
-      for (let i = 1; i < (x as any[]).length; i++) {
-        args.push(eval_a((x as any[])[i], env));
+      for (let i = 1; i < (item as Typed<Atom>[]).length; i++) {
+        args.push(eval_a((item as Typed<Atom>[])[i], env));
       }
       return proc(args);
     }
@@ -42,7 +42,7 @@ function eval_a(
 }
 
 function setup() {
-  let program = "(begin (define r 10) (define ops (list pi r r)) (* 2 (atan (apply * ops))))"; // The higher `r` is, the closer to pi
+  let program = "(not false)"; // The higher `r` is, the closer to pi
 
   console.log(`Your input: ${program}`);
   console.log("Is tokenized into: ")
@@ -80,4 +80,4 @@ function setup() {
   );
 }
 
-function draw() {  }
+function draw() { }
