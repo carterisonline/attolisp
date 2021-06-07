@@ -314,6 +314,9 @@ class Env<T> {
           type: Type.Boolean
         }
       }, // Returns true if the first element is a number
+      "only": (vals: Expr[]) => {
+        return vals[0]
+      }, // Returns the first value
       // Prints each argument
       "println": (vals: Typed<Atom>[]) => {
         if (vals.length > 1) {

@@ -42,6 +42,7 @@ function eval_a(
 }
 
 function setup() {
+  run_tests();
   let program = "(not false)"; // The higher `r` is, the closer to pi
 
   console.log(`Your input: ${program}`);
