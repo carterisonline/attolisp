@@ -119,4 +119,261 @@ function run_tests() {
     value: -13.37,
     type: Type.Number
   }));
+
+  testcase("Simple subtraction", assert_program_eq("(- 10 2 3)", {
+    value: 5,
+    type: Type.Number
+  }));
+
+  testcase("Simple multiplication", assert_program_eq("(* 9 2 1)", {
+    value: 18,
+    type: Type.Number
+  }));
+
+  testcase("Reciprocal", assert_program_eq("(/ 10)", {
+    value: 0.1,
+    type: Type.Number
+  }));
+
+  testcase("Simple division", assert_program_eq("(/ 5 2)", {
+    value: 2.5,
+    type: Type.Number
+  }));
+
+  testcase("Values are increasing", assert_program_eq("(< 1 2 3)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Values are decreasing ", assert_program_eq("(> 3 2 1)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Values are non-decreasing", assert_program_eq("(<= 10 10 11)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Values are non-increasing", assert_program_eq("(>= 11 11 10)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("All values are equal", assert_program_eq("(= 1 1 1)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Values are not equal", assert_program_eq("(not (= 1 2 3))", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Absolute value", assert_program_eq("(abs -10)", {
+    value: 10,
+    type: Type.Number
+  }));
+
+  // Remember your unit circle, kids!
+
+  testcase("arcCos", assert_program_eq("(acos (/ (sqrt 3) 2))", {
+    value: PI / 6 + 0.0000000000000001, // Thank you, floating point numbers.
+    type: Type.Number
+  }));
+
+  testcase("Apply arguments", assert_program_eq("(apply + (list 5 2 1))", {
+    value: 8,
+    type: Type.Number
+  }));
+
+  testcase("arcSin", assert_program_eq("(asin 1)", {
+    value: PI / 2,
+    type: Type.Number
+  }))
+
+  testcase("arcTan", assert_program_eq("(atan 1)", {
+    value: PI / 4,
+    type: Type.Number
+  }))
+
+  testcase("Attach head to tail", assert_program_eq("(attach 1 (list 2 3))", [{
+    value: 1,
+    type: Type.Number
+  }, {
+    value: 2,
+    type: Type.Number
+  }, {
+    value: 3,
+    type: Type.Number
+  }]));
+
+  testcase("Begin structure", assert_program_eq("(begin (only true) (only false))", {
+    value: false,
+    type: Type.Boolean
+  }));
+
+  testcase("Cosine", assert_program_eq("(cos (/ (* 5 pi) 6))", {
+    value: -sqrt(3) / 2 - 0.0000000000000001, // >:(
+    type: Type.Number
+  }));
+
+  testcase("Eq", assert_program_eq("(eq? false false)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Exponents", assert_program_eq("(exp 2 5)", {
+    value: 32,
+    type: Type.Number
+  }));
+
+  testcase("Method is a function", assert_program_eq("(function? +)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Head of a list", assert_program_eq("(head (list 4 5 6))", {
+    value: 4,
+    type: Type.Number
+  }));
+
+  testcase("Length of a list", assert_program_eq("(length (list 9 0 2 1 0))", {
+    value: 5,
+    type: Type.Number
+  }));
+
+  testcase("List is a list", assert_program_eq("(list? (list 1 2 3))", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Map addition operation", assert_program_eq("(map + (list 3 7 2 1) (list 8 6 1))", [{
+    value: 11,
+    type: Type.Number
+  }, {
+    value: 13,
+    type: Type.Number
+  }, {
+    value: 3,
+    type: Type.Number
+  }, {
+    value: 1,
+    type: Type.Number
+  }]));
+
+  //! babby's first issue!
+  testcase("Map addition operation (backwards)", assert_program_eq("(map + (list 3 7 2) (list 8 6 1 1))", [{
+    value: 11,
+    type: Type.Number
+  }, {
+    value: 13,
+    type: Type.Number
+  }, {
+    value: 3,
+    type: Type.Number
+  }, {
+    value: 1,
+    type: Type.Number
+  }]));
+
+  testcase("Maximum value", assert_program_eq("(max 8 1 5)", {
+    value: 8,
+    type: Type.Number
+  }));
+
+  testcase("Minimum value", assert_program_eq("(min 8 1 5)", {
+    value: 1,
+    type: Type.Number
+  }));
+
+  testcase("None is none", assert_program_eq("(none? none)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Float is a number", assert_program_eq("(number? 17.67)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Integer is a number", assert_program_eq("(number? 100)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Weird floats are still numbers", assert_program_eq("(number? 0.)", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Number in a string is not a number", assert_program_eq("(number? '100')", {
+    value: false,
+    type: Type.Boolean
+  }));
+
+  testcase("Round number", assert_program_eq("(round 12.5)", {
+    value: 13,
+    type: Type.Number
+  }));
+
+  testcase("Sine", assert_program_eq("(sin 0)", {
+    value: 0,
+    type: Type.Number
+  }))
+
+  testcase("String is a string", assert_program_eq("(string? 'Hello, world!')", {
+    value: true,
+    type: Type.Boolean
+  }));
+
+  testcase("Spaces in a string are not argseps", assert_program_eq("(length (list 'Hello, world!'))", {
+    value: 1,
+    type: Type.Number
+  }));
+
+  testcase("Literals are not strings", assert_program_eq("(string? println)", {
+    value: false,
+    type: Type.Boolean
+  }));
+
+  testcase("Square root", assert_program_eq("(sqrt 4)", {
+    value: 2,
+    type: Type.Number
+  }));
+
+  testcase("Tail of a list", assert_program_eq("(tail (list 1 2))", [{
+    value: 2,
+    type: Type.Number
+  }]));
+
+  testcase("Tangent", assert_program_eq("(tan (/ pi 4))", {
+    value: 1 - 0.0000000000000001,
+    type: Type.Number
+  }));
+
+  testcase("Simple definitions", assert_program_eq("(begin (define r 10) (only r))", {
+    value: 10,
+    type: Type.Number
+  }));
+
+  testcase("If true", assert_program_eq("(if true (only 5) (only 10))", {
+    value: 5,
+    type: Type.Number
+  }));
+
+  testcase("If false", assert_program_eq("(if false (only 5) (only 10))", {
+    value: 10,
+    type: Type.Number
+  }));
+
+  testcase("If true (parsed)", assert_program_eq("(if (= 1 1) (only 5) (only 10))", {
+    value: 5,
+    type: Type.Number
+  }));
+
+  testcase("If false (parsed)", assert_program_eq("(if (= 1 2) (only 5) (only 10))", {
+    value: 10,
+    type: Type.Number
+  }));
 }

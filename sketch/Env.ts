@@ -272,6 +272,14 @@ class Env<T> {
             v[j][i - 1] = (vals[i] as Typed<Atom>[])[j];
           }
         }
+        // Fix for test "Map addition operation (backwards)"
+        v = v.map(v => {
+          let t = [];
+          for (let i of v) {
+            i && t.push(i);
+          }
+          return t;
+        })
         return v.map(v => (vals[0] as Function)(v));
       },
       // Returns the maximum of any amount of numbers
@@ -350,6 +358,11 @@ class Env<T> {
           type: Type.Boolean
         }
       }, // Returns true if the first element is a string
+      "sqrt": (vals: Typed<number>[]) => {
+        return {
+          value: sqrt(vals[0].value), type: Type.Number
+        }
+      }, // Returns sqrt(n)
       // Returns the tail of a list
       "tail": (vals: any[]) => {
         let out = vals[0];

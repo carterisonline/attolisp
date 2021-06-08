@@ -20,13 +20,22 @@ function eval_a(
   } else if (item[0].value === "if") {
     // Run second argument if the first argument is true, else, run the third.
     const [_, test, conseq, alt] = item as Typed<Atom>[];
-    const exp = (eval_a(test, env) as boolean) === true ? conseq : alt;
+    let exp: Typed<Atom>;
+
+    // fix for test "If true"
+    if (eq(test, { type: Type.Boolean, value: true })) {
+      exp = conseq;
+    } else if (eq(test, { type: Type.Boolean, value: false })) {
+      exp = alt;
+    } else {
+      // fix for test "If true (parsed)"
+      exp = (eval_a(test, env)).value === true ? conseq : alt;
+    }
     return eval_a(exp, env);
   } else if (item[0].value === "define") {
     // Add a function to the environment, persisting only for the scope it's in.
     const [_, symbol, exp] = item as Typed<Atom>[];
     env.data[symbol.value as string] = eval_a(exp, env);
-    console.log(env);
   } else {
     // If `x` is an array/object, then we have to run a subpair as a function!
     const proc = eval_a((item as Typed<Atom>[])[0], env); // What function are we using?
