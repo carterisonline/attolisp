@@ -233,6 +233,11 @@ function run_tests() {
     type: Type.Boolean
   }));
 
+  testcase("Floor number", assert_program_eq("(floor 12.51)", {
+    value: 12,
+    type: Type.Number
+  }));
+
   testcase("Head of a list", assert_program_eq("(head (list 4 5 6))", {
     value: 4,
     type: Type.Number
@@ -376,4 +381,42 @@ function run_tests() {
     value: 10,
     type: Type.Number
   }));
+
+  testcase("One-arg functions", assert_program_eq("(begin (function plusone (x) (+ x 1)) (plusone 1))", {
+    value: 2,
+    type: Type.Number
+  }));
+
+  testcase("Multiarg functions", assert_program_eq("(begin (function plusone (x y) (+ x y 1)) (plusone 4 5))", {
+    value: 10,
+    type: Type.Number
+  }));
+
+  testcase("Advanced functions", assert_program_eq("(begin (function mod (x y) (- x (* y (floor (/ x y))))) (mod 20 7))", {
+    value: 20 % 7,
+    type: Type.Number
+  }));
+
+  testcase("No function collision (odd)", assert_program_eq("(begin (function plusone (x) (+ x 1)) (function plustwo (x) (+ x 2)) (plusone 1))", {
+    value: 2,
+    type: Type.Number
+  }));
+
+  testcase("No function collision (even)", assert_program_eq("(begin (function plusone (x) (+ x 1)) (function plustwo (x) (+ x 2)) (plustwo 1))", {
+    value: 3,
+    type: Type.Number
+  }));
+
+  testcase("Recursive functions", assert_program_eq("(begin (function fact (n) (if (<= n 1) 1 (* n (fact (- n 1))))) (fact 10))", {
+    value: 3628800,
+    type: Type.Number
+  }));
+
+  testcase("List-generative functions", assert_program_eq("(begin (function range (a b) (if (= a b) a (attach a (range (+ a 1) b)))) (range 0 4))", [
+    { value: 0, type: Type.Number },
+    { value: 1, type: Type.Number },
+    { value: 2, type: Type.Number },
+    { value: 3, type: Type.Number },
+    { value: 4, type: Type.Number },
+  ]))
 }

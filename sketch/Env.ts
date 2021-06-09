@@ -246,6 +246,12 @@ class Env<T> {
           type: Type.Boolean
         }
       }, // Returns true if the first element is a function
+      "floor": (numbers: Typed<number>[]) => {
+        return {
+          value: floor(numbers[0].value),
+          type: Type.Number
+        }
+      }, // Rounds down the first number
       "head": (vals: Typed<Atom>[][]) => vals[0][0], // Returns the first item in a list
       "length": (vals: Expr[]) => {
         return {
@@ -346,7 +352,7 @@ class Env<T> {
           value: round(numbers[0].value),
           type: Type.Number
         }
-      }, // Rounds any amount of numbers
+      }, // Rounds the first number
       "sin": (vals: Typed<number>[]) => {
         return {
           value: sin(vals[0].value), type: Type.Number
